@@ -755,7 +755,7 @@ export default connect(({ user, opts }) => ({
 					pl => pl.user && pl.user !== this.props.user.name,
 				)
 			) {
-				sock.userEmit('move', { data });
+				sock.userEmit('move', { id: this.props.gameid, data });
 			}
 			if (data.x === 'cast' || data.x === 'end') {
 				let play;
@@ -1268,6 +1268,8 @@ export default connect(({ user, opts }) => ({
 				) {
 					this.applyNext({ x: 'foe', t: this.state.player2.id });
 				}
+			} else if (ch === 'l') {
+				sock.userEmit('reloadmoves', { id: this.props.gameid });
 			} else if (~(chi = '[]'.indexOf(ch))) {
 				this.setState(state => {
 					const { players } = this.props.game,
@@ -1305,6 +1307,10 @@ export default connect(({ user, opts }) => ({
 			dispatch(
 				store.setCmds({
 					move: ({ data }) => this.applyNext(data, true),
+					reloadmoves: ({ moves }) => {
+						game.replaceMoves(moves);
+						this.forceUpdate();
+					},
 					foeleft: ({ data }) => {
 						const { players } = game.data;
 						for (let i = 0; i < players.length; i++) {
@@ -1319,7 +1325,6 @@ export default connect(({ user, opts }) => ({
 		}
 
 		componentDidMount() {
-			sock.cancelTrade();
 			if (!this.props.replay) {
 				if (!this.props.game.data.spectate) {
 					document.addEventListener('keydown', this.onkeydown);

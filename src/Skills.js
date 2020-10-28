@@ -1589,9 +1589,6 @@ const Skills = {
 			(t || c.owner.foe).addpoison(n);
 		});
 	},
-	poisonfoe: (ctx, c) => {
-		if (ctx.rng() < 0.7) c.owner.foe.addpoison(1);
-	},
 	powerdrain: target('crea', (ctx, c, t) => {
 		const ti = [];
 		for (let i = 0; i < 23; i++) {

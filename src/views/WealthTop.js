@@ -24,7 +24,7 @@ export default class WealthTop extends Component {
 			{ top } = this.state;
 		if (top) {
 			for (let i = 0; i < top.length; i += 2) {
-				const ol = i < 50 ? ol1c : ol2c;
+				const ol = i < top.length / 2 ? ol1c : ol2c;
 				ol.push(
 					<li
 						key={i}

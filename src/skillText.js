@@ -4,7 +4,7 @@ import * as originalText from './vanilla/skillText.js';
 
 export default function skillText(c) {
 	if (c instanceof Card && c.type === etg.Spell) {
-		const entry = getDataFromName(c.getSkill('cast').castName);
+		const entry = getDataFromName(c.getSkill('cast').toString());
 		return processEntry(c, 'cast', entry);
 	} else {
 		const ret = [],
@@ -413,10 +413,9 @@ const data = {
 		return {
 			hit: `${x} counters on hit. Throttled (only triggers at most twice from Adrenaline.)`,
 			cast: `${x} counters to opponent.`,
+			ownplay: 'When this card enters play, give 1 poison counter to opponent.',
 		};
 	},
-	poisonfoe:
-		'When this card enters play, 70% chance to give 1 poison counter to opponent.',
 	powerdrain:
 		"Remove half of target creature's strength and HP, rounded up. Add an equal amount of strength and HP to a random creature you control.",
 	precognition:
