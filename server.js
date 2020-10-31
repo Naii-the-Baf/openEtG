@@ -193,7 +193,6 @@ const userEvents = {
 		await Us.save(user);
 		Us.users.delete(u);
 		Us.socks.delete(u);
-		sockmeta.set(this, {});
 	},
 	async delete({ u }, user, userId) {
 		await pg.trx(async sql => {
@@ -212,7 +211,6 @@ const userEvents = {
 		});
 		Us.users.delete(u);
 		Us.socks.delete(u);
-		sockmeta.set(this, {});
 	},
 	async setarena(data, user, userId) {
 		if (!user.ocard || !data.d) {
@@ -1220,7 +1218,6 @@ const sockEvents = {
 			if (sock.readyState === 1) {
 				const meta = sockmeta.get(sock);
 				if (meta) {
-					const { name } = meta;
 					if (meta.offline) continue;
 					if (meta.afk) name += ' (afk)';
 					activeusers.push(meta.afk ? `${name} (afk)` : name);
@@ -1247,13 +1244,6 @@ const sockEvents = {
 		sockEmit(this, 'bzread', { bz });
 	},
 };
-function onSocketClose() {
-	const info = sockmeta.get(this);
-	sockmeta.set(this, {});
-	if (info?.name) {
-		Us.socks.delete(info.name);
-	}
-}
 async function onSocketMessage(rawdata) {
 	const data = parseJSON(rawdata);
 	if (!data || typeof data !== 'object' || typeof data.x !== 'string') return;
@@ -1271,8 +1261,6 @@ async function onSocketMessage(rawdata) {
 					const [row] = result.rows;
 					if (data.a === row.auth) {
 						const user = await Us.load(u);
-						const meta = sockmeta.get(this);
-						meta.name = u;
 						Us.socks.set(u, this);
 						delete data.a;
 						const res = await Promise.resolve(

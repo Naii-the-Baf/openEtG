@@ -34,6 +34,11 @@ const usergcloop = setInterval(
 			clearMatchRequests(),
 			storeUsers().then(() => {
 				// Clear inactive users
+				for (const [u, sock] of socks) {
+					if (sock.readyState > 1) {
+						socks.delete(u);
+					}
+				}
 				for (const u of users.keys()) {
 					if (usergc.delete(u)) {
 						users.delete(u);
